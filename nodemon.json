@@ -1,0 +1,6 @@
+{
+  "env": {
+    "JWT_KEY": "ThanhHai98",
+    "DBURI": "mongodb://localhost:27017/sales-management"
+  }
+}
