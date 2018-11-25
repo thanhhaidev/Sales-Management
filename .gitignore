@@ -1,3 +1,4 @@
+### Node ###
 # Logs
 logs
 *.log
@@ -71,3 +72,6 @@ typings/
 
 # Serverless directories
 .serverless
+
+# FuseBox cache
+.fusebox/
