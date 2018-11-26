@@ -85,29 +85,6 @@ exports.delete_category = (req, res, next) => {
             error: err
         });
     });
-
-    // Category.findByIdAndRemove({
-    //         _id: id
-    //     })
-    //     .exec()
-    //     .then(result => {
-    //         res.status(200).json({
-    //             message: "Deteled category successfully",
-    //             request: {
-    //                 type: "POST",
-    //                 body: {
-    //                     id: result._id,
-    //                     name: result.Name,
-    //                     code: result.Code
-    //                 }
-    //             }
-    //         });
-    //     })
-    //     .catch(err => {
-    //         res.status(500).json({
-    //             error: err
-    //         });
-    //     });
 }
 
 exports.update_category = (req, res, next) => {

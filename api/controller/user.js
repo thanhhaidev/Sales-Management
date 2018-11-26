@@ -77,9 +77,15 @@ exports.user_login = (req, res, next) => {
               expiresIn: "1h"
             }
           );
+          console.log(result);
           return res.status(200).json({
             message: "Auth successful",
-            token: token
+            username: user[0].username,
+            userId: user[0]._id,
+            fullname: user[0].fullname,
+            avatar: "http://localhost:3000/" + user[0].avatar,
+            token: token,
+
           });
         }
         res.status(401).json({
@@ -96,30 +102,37 @@ exports.user_login = (req, res, next) => {
 
 exports.get_info_user = (req, res, next) => {
   const id = req.params.userId;
-  User.findById(id)
-    .select("_id username isAdmin avatar fullname")
-    .exec()
-    .then(doc => {
-      if (doc) {
-        res.status(200).json({
-          user: doc,
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/user/info/" + doc._id
-          }
+  if (id === req.userData.userId) {
+    User.findById(id)
+      .select("_id username isAdmin avatar fullname")
+      .exec()
+      .then(doc => {
+        if (doc) {
+          res.status(200).json({
+            user: doc,
+            request: {
+              type: "GET",
+              url: "http://localhost:3000/user/info/" + doc._id
+            }
+          });
+        } else {
+          res.status(404).json({
+            code: "no-user",
+            message: "No such user exists"
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err
         });
-      } else {
-        res.status(404).json({
-          code: "no-user",
-          message: "No such user exists"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err
       });
-    });
+  } else {
+    return res.status(401).json({
+      message: "Auth failed"
+    })
+  }
+
 };
 
 exports.get_all_user = (req, res, next) => {
@@ -203,34 +216,41 @@ exports.user_delete = (req, res, next) => {
 
 exports.update_info_user = (req, res, next) => {
   const id = req.params.userId;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
-  User.findByIdAndUpdate({
-      _id: id
-    }, {
-      $set: updateOps
-    })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "Update Category successfully",
-        info: {
-          username: result.username,
-          isAdmin: doc.isAdmin,
-          fullname: doc.fullname,
-          avatar: "http://localhost:3000/" + result.avatar,
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/user/info/" + result._id
+  if (id === req.userData.userId) {
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    User.findByIdAndUpdate({
+        _id: id
+      }, {
+        $set: updateOps
+      })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+          message: "Update Category successfully",
+          info: {
+            username: result.username,
+            isAdmin: result.isAdmin,
+            fullname: result.fullname,
+            avatar: "http://localhost:3000/" + result.avatar,
+            request: {
+              type: "GET",
+              url: "http://localhost:3000/user/info/" + result._id
+            }
           }
-        }
+        });
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err
+        });
       });
+  } else {
+    res.status(401).json({
+      message: "Auth failed"
     })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      });
-    });
+  }
+
 };
