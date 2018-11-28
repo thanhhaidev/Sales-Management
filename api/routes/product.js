@@ -36,7 +36,7 @@ router.post(
   ProductController.product_create
 );
 router.get("/", checkAuth, ProductController.get_all_product);
-router.delete("/:productCode", checkAuth, ProductController.delete_product);
-router.patch("/:productCode", checkAuth, ProductController.update_product);
+router.delete("/:productID", checkAuth, ProductController.delete_product);
+router.patch("/:productID", checkAuth, ProductController.update_product);
 
 module.exports = router;

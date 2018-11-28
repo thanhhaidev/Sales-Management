@@ -9,6 +9,8 @@ require('dotenv').config()
 const userRoutes = require("./api/routes/user");
 const categoryRoutes = require("./api/routes/category");
 const productRoutes = require("./api/routes/product");
+const customerRoutes = require("./api/routes/customer");
+const cashbillRoutes = require("./api/routes/cashbill");
 
 // config database
 mongoose.connect(process.env.DBURI, {
@@ -49,6 +51,8 @@ app.use((req, res, next) => {
 app.use("/user", userRoutes);
 app.use("/category", categoryRoutes);
 app.use("/product", productRoutes);
+app.use("/customer", customerRoutes);
+app.use("/cashbill", cashbillRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

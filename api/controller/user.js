@@ -170,7 +170,8 @@ exports.user_delete = (req, res, next) => {
   User.findById(req.userData.userId)
     .exec()
     .then(user => {
-      if (user.isAdmin) {
+      if (user.isAdmin || id === req.userData.userId) {
+        console.log("test");
         User.findById(id)
           .exec()
           .then(user => {

@@ -34,11 +34,11 @@ exports.get_all_category = (req, res, next) => {
         .then(docs => {
             const response = {
                 count: docs.length,
-                products: docs.map(doc => {
+                categories: docs.map(doc => {
                     return {
-                        Name: doc.Name,
                         id: doc._id,
-                        Code: doc.Code
+                        Code: doc.Code,
+                        Name: doc.Name
                     };
                 })
             };
@@ -54,7 +54,7 @@ exports.get_all_category = (req, res, next) => {
 exports.delete_category = (req, res, next) => {
     const id = req.params.categoryID;
 
-    Product.count({
+    Product.countDocuments({
         Category: id
     }, (err, count) => {
         if (count <= 0) {

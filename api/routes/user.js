@@ -34,6 +34,6 @@ router.get("/", checkRole, UserController.get_all_user);
 router.get("/info/:userId", checkAuth, UserController.get_info_user);
 router.post("/signup", upload.single("avatar"), UserController.user_signup);
 router.post("/login", UserController.user_login);
-router.delete("/delete/:userId", checkRole, UserController.user_delete);
+router.delete("/delete/:userId", checkAuth, UserController.user_delete);
 router.patch("/update/:userId", checkAuth, UserController.update_info_user);
 module.exports = router;
