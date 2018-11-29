@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Customer = require("../models/customer");
+const CashBill = require("../models/cashbill");
 
 exports.customer_create = (req, res, next) => {
     const customer = new Customer({
@@ -59,41 +60,32 @@ exports.get_all_customer = (req, res, next) => {
         });
 };
 
-// exports.delete_category = (req, res, next) => {
-//     const id = req.params.categoryID;
-
-//     Product.countDocuments({
-//         Category: id
-//     }, (err, count) => {
-//         if (count <= 0) {
-//             Category.findByIdAndRemove({
-//                     _id: id
-//                 })
-//                 .exec()
-//                 .then(result => {
-//                     res.status(200).json({
-//                         message: "Deteled category successfully",
-//                         request: {
-//                             type: "POST",
-//                             body: {
-//                                 id: result._id,
-//                                 name: result.Name,
-//                                 code: result.Code
-//                             }
-//                         }
-//                     });
-//                 })
-//         } else {
-//             res.status(500).json({
-//                 message: "This category contains the product"
-//             });
-//         }
-//     }).catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// }
+exports.delete_customer = (req, res, next) => {
+    const id = req.params.customerID;
+    CashBill.countDocuments({
+        Customer: id
+    }, (err, count) => {
+        if (count <= 0) {
+            Customer.findByIdAndRemove({
+                    _id: id
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: "Deteled customer successfully",
+                    });
+                })
+        } else {
+            res.status(500).json({
+                message: "This customer contains the cash bill"
+            });
+        }
+    }).catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+}
 
 exports.update_customer = (req, res, next) => {
     const id = req.params.customerID;
