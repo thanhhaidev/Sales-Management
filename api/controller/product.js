@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Product = require("../models/product");
 const Category = require("../models/category");
 const Cashbill = require("../models/cashbill");
+const InstallmentBill = require("../models/installmentbill");
 
 exports.product_create = (req, res, next) => {
     const CategoryID = req.body.CategoryID;
@@ -100,32 +101,28 @@ exports.delete_product = (req, res, next) => {
         },
         (err, found) => {
             if (found === null) {
-                Product.findByIdAndRemove({
-                        _id: id
-                    })
-                    .exec()
-                    .then(result => {
-                        res.status(200).json({
-                            message: "Deteled product successfully",
-                            request: {
-                                type: "POST",
-                                body: {
-                                    id: result._id,
-                                    Code: result.Code,
-                                    Name: result.Name,
-                                    SalePrice: result.SalePrice,
-                                    OriginPrice: result.OriginPrice,
-                                    InstallmentPrice: result.InstallmentPrice,
-                                    Quantity: result.Quantity,
-                                    Avatar: "http://localhost:3000/" + result.Avatar,
-                                    Category: result.Category
-                                }
-                            }
+                InstallmentBill.findOne({
+                    Products: id
+                }, (err, kq) => {
+                    if (kq === null) {
+                        Product.findByIdAndRemove({
+                                _id: id
+                            })
+                            .exec()
+                            .then(result => {
+                                res.status(200).json({
+                                    message: "Deteled product successfully"
+                                });
+                            });
+                    } else {
+                        res.status(500).json({
+                            message: "This product contains the installment bill or cash bill"
                         });
-                    });
+                    }
+                })
             } else {
                 res.status(500).json({
-                    message: "This product contains the cash bill"
+                    message: "This product contains the cash bill or installment bill"
                 });
             }
         }

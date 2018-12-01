@@ -8,12 +8,11 @@ exports.cashbill_create = (req, res, next) => {
 
   checkQuantity(req.body.ArrayProductID, (valid, invalid) => {
     Customer.findById({
-      _id: CustomerID
-    })
+        _id: CustomerID
+      })
       .exec()
       .then(result => {
-        CashBill.countDocuments(
-          {
+        CashBill.countDocuments({
             Customer: CustomerID
           },
           (err, count) => {
@@ -53,6 +52,7 @@ exports.cashbill_create = (req, res, next) => {
                   Shipper: result.Shipper,
                   Note: result.Note,
                   GrandTotal: result.GrandTotal,
+                  Date: result.Date,
                   ProductInvalid: invalid
                 }
               });
@@ -70,7 +70,7 @@ exports.cashbill_create = (req, res, next) => {
 
 exports.get_all_cashbill = (req, res, next) => {
   CashBill.find()
-    .select("Code _id Customer Product Shipper Note GrandTotal")
+    .select("Code _id Customer Product Shipper Note GrandTotal Date")
     .populate("Customer", "Name Address YearOfBirth PhoneNumber")
     .populate("Product", "Name Code SalePrice")
     .exec()
@@ -85,7 +85,8 @@ exports.get_all_cashbill = (req, res, next) => {
             Products: doc.Product,
             Shipper: doc.Shipper,
             Note: doc.Note,
-            GrandTotal: doc.GrandTotal
+            GrandTotal: doc.GrandTotal,
+            Date: doc.Date
           };
         })
       };
@@ -101,24 +102,12 @@ exports.get_all_cashbill = (req, res, next) => {
 exports.delete_cashbill = (req, res, next) => {
   const id = req.params.cashbillID;
   CashBill.findByIdAndRemove({
-    _id: id
-  })
+      _id: id
+    })
     .exec()
     .then(result => {
       res.status(200).json({
-        message: "Deteled cash bill successfully",
-        request: {
-          type: "POST",
-          body: {
-            id: result._id,
-            Code: result.Code,
-            Customer: result.Customer,
-            Products: result.Product,
-            Shipper: result.Shipper,
-            Note: result.Note,
-            GrandTotal: result.GrandTotal
-          }
-        }
+        message: "Deteled cash bill successfully"
       });
     })
     .catch(err => {
@@ -134,18 +123,15 @@ exports.update_cashbill = (req, res, next) => {
   for (const ops of req.body) {
     updateOps[ops.propName] = ops.value;
   }
-  CashBill.findByIdAndUpdate(
-    {
+  CashBill.findByIdAndUpdate({
       _id: id
-    },
-    {
+    }, {
       $set: updateOps
-    }
-  )
+    })
     .exec()
     .then(result => {
       res.status(200).json({
-        message: "Update product successfully"
+        message: "Update cash bill successfully"
       });
     })
     .catch(err => {

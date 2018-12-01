@@ -11,6 +11,7 @@ const categoryRoutes = require("./api/routes/category");
 const productRoutes = require("./api/routes/product");
 const customerRoutes = require("./api/routes/customer");
 const cashbillRoutes = require("./api/routes/cashbill");
+const installmentbillRoutes = require("./api/routes/installmentbill");
 
 // config database
 mongoose.connect(process.env.DBURI, {
@@ -53,6 +54,7 @@ app.use("/category", categoryRoutes);
 app.use("/product", productRoutes);
 app.use("/customer", customerRoutes);
 app.use("/cashbill", cashbillRoutes);
+app.use("/installmentbill", installmentbillRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
